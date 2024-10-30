@@ -1,20 +1,11 @@
-import { Server } from "src/Modules/server/entities/server.entity";
-import { User } from "src/Modules/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Server } from "src/modules/server/entities/server.entity";
+import { User } from "src/modules/user/entities/user.entity";
+import { CommonEntity } from "src/shared/entity/common.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne } from "typeorm";
 
 @Entity()
-export class Ban {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @ManyToOne(() => User)
-    @JoinColumn({name : 'userId'})
-    user: User;
-
-    @ManyToOne(() => Server)
-    @JoinColumn({name : 'serverId'})
-    server: Server;
-
+export class Ban extends CommonEntity {
+    
     @CreateDateColumn()
     banDate: Date; 
 
@@ -23,10 +14,10 @@ export class Ban {
 
     @Column({ nullable: true })
     duration: Date;
-    
-    @CreateDateColumn()
-    createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedday: Date;
+    @ManyToOne(() => User, (user) => user.bans)
+    user: User;
+
+    @ManyToOne(() => Server, (server) => server.bans)
+    server: Server;
 }

@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateBanDto } from './dto/create-ban.dto';
 import { UpdateBanDto } from './dto/update-ban.dto';
+import { Ban } from './entities/ban.entity';
 
 @Injectable()
 export class BansService {
-  create(createBanDto: CreateBanDto) {
-    return 'This action adds a new ban';
+  constructor(
+    @InjectRepository(Ban)
+    private banRepository: Repository<Ban>
+  ) {}
+
+
+  async create(createBanDto: CreateBanDto): Promise<number> {
+    const ban = this.banRepository.create(createBanDto);
+    await this.banRepository.save(createBanDto);
+    return ban.id;
   }
+
 
   findAll() {
-    return `This action returns all bans`;
+    return this.banRepository.find();
   }
+
 
   findOne(id: number) {
-    return `This action returns a #${id} ban`;
+    return this.banRepository.findOne({where: {id}});
   }
 
-  update(id: number, updateBanDto: UpdateBanDto) {
-    return `This action updates a #${id} ban`;
+  async update(id: number, updateBanDto: UpdateBanDto) {
+   return await this.banRepository.update(id, updateBanDto)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ban`;
+  async remove(id: number) {
+    return await this.banRepository.delete(id);
   }
 }

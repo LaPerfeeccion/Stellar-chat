@@ -1,34 +1,27 @@
-import { ChatChannel } from "src/Modules/chat_channels/entities/chat_channel.entity";
-import { Server } from "src/Modules/server/entities/server.entity";
-import { User } from "src/Modules/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { ChatChannel } from "src/modules/chat_channels/entities/chat_channel.entity";
+import { Server } from "src/modules/server/entities/server.entity";
+import { User } from "src/modules/user/entities/user.entity";
+import { CommonEntity } from "src/shared/entity/common.entity";
+import { Column, Entity, ManyToOne } from "typeorm";
 
 @Entity()
-export class Message {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class Message extends CommonEntity {
+   
     @Column()
     content: string;
 
-    @ManyToOne(() => User)
-    @JoinColumn({name : 'userId'})
+    
+    @ManyToOne(() => User, (user) => user.message)
     user: User;
 
-    @ManyToOne(() => Server)
-    @JoinColumn({name : 'serverId'})
+    
+    @ManyToOne(() => Server, (server) => server.message)
     server: Server;
 
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @ManyToOne(() => ChatChannel)
-    @JoinColumn({name : 'channelId'})
-    channel: ChatChannel;
-
+    
     @Column({default: false})
     isEdited: boolean;
 
-    @UpdateDateColumn()
-    updatedday: Date;
+    @ManyToOne(() => ChatChannel, (channel) => channel.message)
+    channel: ChatChannel;
 }
