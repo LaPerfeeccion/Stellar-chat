@@ -1,15 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateServerDto } from './dto/create-server.dto';
 import { UpdateServerDto } from './dto/update-server.dto';
+import { Server } from './entities/server.entity';
 
 @Injectable()
 export class ServerService {
-  create(createServerDto: CreateServerDto) {
-    return 'This action adds a new server';
+  constructor(
+    @InjectRepository(Server)
+    private serverRepository: Repository<Server>
+  ) {}
+
+
+  async create(createServerDto: CreateServerDto) {
+    const user = await this.serverRepository.save(createServerDto);
+    return user.id;
   }
 
   findAll() {
-    return `This action returns all server`;
+    return this.serverRepository.find({
+        relations:{
+          channels: true
+        }
+    });
   }
 
   findOne(id: number) {

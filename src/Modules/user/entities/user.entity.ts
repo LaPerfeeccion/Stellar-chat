@@ -1,6 +1,4 @@
-import { Ban } from "src/modules/bans/entities/ban.entity";
-import { LevelingSystem } from "src/modules/leveling_system/entities/leveling_system.entity";
-import { Message } from "src/modules/messages/entities/message.entity";
+import { ChatChannelUser } from "src/Modules/chat_channel/entities/chat_channel-user.entity";
 import { Rol } from "src/modules/rol/entities/rol.entity";
 import { Server } from "src/modules/server/entities/server.entity";
 import { CommonEntity } from "src/shared/entity/common.entity";
@@ -23,13 +21,10 @@ export class User extends CommonEntity {
     email: string;
 
     @Column()
-    roleId: number;
+    rolId: number;
 
-    @ManyToOne(() => Rol, (rol) => rol.user)
+    @ManyToOne(() => Rol, (rol) => rol.users)
     rol: Rol;
-
-    @OneToMany(() => Ban, (ban) => ban.user)
-    bans: Ban[];
 
     @OneToMany(() => Server, (server) => server.admin)
     adminServers: Server[];
@@ -37,10 +32,7 @@ export class User extends CommonEntity {
     @ManyToOne(() => UserType, (usertype) => usertype.users)
     userType: UserType;
 
-    @OneToMany(() => Message, (message) => message.user)
-    message: Message[];
-
-    @OneToMany(() => LevelingSystem, (levelingSystem) => levelingSystem.user)
-    levelingSystem: LevelingSystem[];
+    @OneToMany(() => ChatChannelUser, (chatChannelUser) => chatChannelUser.user)
+    channels: ChatChannelUser[]
 
   }

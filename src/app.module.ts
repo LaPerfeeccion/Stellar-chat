@@ -1,13 +1,19 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BansModule } from './modules/bans/bans.module';
-import { ChatChannelsModule } from './modules/chat_channels/chat_channels.module';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AuthModule } from './Modules/auth/auth.module';
+import { BanModule } from './Modules/ban/ban.module';
+import { ChatChannelModule } from './Modules/chat_channel/chat_channel.module';
 import { LevelingSystemModule } from './modules/leveling_system/leveling_system.module';
-import { MessagesModule } from './modules/messages/messages.module';
+import { MessagesModule } from './modules/message/message.module';
+import { PermissionModule } from './modules/permission/permission.module';
 import { RolModule } from './modules/rol/rol.module';
+import { RolLevelingSystemModule } from './modules/rol_leveling_system/rol_leveling_system.module';
+import { RolLevelingSystemService } from './modules/rol_leveling_system/rol_leveling_system.service';
 import { ServerModule } from './modules/server/server.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -31,8 +37,11 @@ import { UserModule } from './modules/user/user.module';
       inject: [ConfigService]
     }),
     UserModule,
-    BansModule, ChatChannelsModule, LevelingSystemModule, MessagesModule, ServerModule, RolModule],
+    BanModule, ChatChannelModule, LevelingSystemModule, MessagesModule, ServerModule, RolModule, AuthModule, PermissionModule, RolLevelingSystemModule],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService,{ 
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard,
+}, RolLevelingSystemService],
 })
 export class AppModule {}

@@ -29,9 +29,17 @@ export class UserService {
    */
   findAll() {
     return this.userRepository.find({
-      relations: ['usertype']
+      relations: {
+        userType: {
+          permissions: true
+        },
+        rol: true,
+        
+      }
     });
   }
+
+  
 
   /**
    *@returns usando where
