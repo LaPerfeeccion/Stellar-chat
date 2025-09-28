@@ -1,5 +1,5 @@
 import { Ban } from "src/Modules/ban/entities/ban.entity";
-import { Message } from "src/modules/message/entities/message.entity";
+import { Message } from "src/Modules/message/entities/message.entity";
 import { User } from "src/Modules/user/entities/user.entity";
 import { CommonEntity } from "src/shared/entity/common.entity";
 import { Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";

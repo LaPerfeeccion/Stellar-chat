@@ -1,6 +1,6 @@
 import { ChatChannelUser } from "src/Modules/chat_channel/entities/chat_channel-user.entity";
-import { Rol } from "src/modules/rol/entities/rol.entity";
-import { Server } from "src/modules/server/entities/server.entity";
+import { Rol } from "src/Modules/rol/entities/rol.entity";
+import { Server } from "src/Modules/server/entities/server.entity";
 import { CommonEntity } from "src/shared/entity/common.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { UserType } from "./user-type.entity";
@@ -20,8 +20,8 @@ export class User extends CommonEntity {
     @Column({ unique: true })
     email: string;
 
-    @Column()
-    rolId: number;
+    //@Column() // Remove this line
+    //rolId: number; // Remove this line
 
     @ManyToOne(() => Rol, (rol) => rol.users)
     rol: Rol;
@@ -33,6 +33,6 @@ export class User extends CommonEntity {
     userType: UserType;
 
     @OneToMany(() => ChatChannelUser, (chatChannelUser) => chatChannelUser.user)
-    channels: ChatChannelUser[]
+    chatChannelUsers: ChatChannelUser[];
 
   }

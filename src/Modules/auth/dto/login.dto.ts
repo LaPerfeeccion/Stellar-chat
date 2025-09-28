@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
-import { User } from 'src/modules/user/entities/user.entity';
+import { User } from 'src/Modules/user/entities/user.entity';
 
 /**
  *

@@ -1,5 +1,5 @@
-import { LevelingSystem } from "src/modules/leveling_system/entities/leveling_system.entity";
-import { Rol } from "src/modules/rol/entities/rol.entity";
+import { LevelingSystem } from "src/Modules/leveling_system/entities/leveling_system.entity";
+import { Rol } from "src/Modules/rol/entities/rol.entity";
 import { CommonEntity } from "src/shared/entity/common.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
 
@@ -9,7 +9,7 @@ export class RolLevelingSystem extends CommonEntity {
     @Column()
     minPoints: number;
 
-    @ManyToOne(() => Rol)
+    @ManyToOne(() => Rol, (rol) => rol.rolLevelingSystem)
     rol: Rol;
 
     @ManyToOne(() => LevelingSystem)

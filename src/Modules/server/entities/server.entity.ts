@@ -1,5 +1,5 @@
 import { ChatChannel } from "src/Modules/chat_channel/entities/chat_channel.entity";
-import { User } from "src/modules/user/entities/user.entity";
+import { User } from "src/Modules/user/entities/user.entity";
 import { CommonEntity } from "src/shared/entity/common.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 

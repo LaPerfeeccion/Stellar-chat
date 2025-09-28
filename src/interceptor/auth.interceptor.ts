@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import { LoginResponseDto } from 'src/modules/auth/dto/login.dto';
-import { User } from 'src/modules/user/entities/user.entity';
+import { User } from 'src/Modules/user/entities/user.entity';
 /**
  *
  */
