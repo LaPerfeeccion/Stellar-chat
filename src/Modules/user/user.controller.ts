@@ -1,4 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerAvatarConfig } from 'multer-avatar.config';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
@@ -31,18 +34,30 @@ export class UserController {
   getTypes() {
     return this.userService.getUserTypes();
   }
-
+  
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getMe(@Req() req) {
+    return this.userService.findById(Number(req.user.id));
+  }
   /**
    *@returns id
    * @param id identificador principal
    */
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne({ id: +id });
+findOne(@Param('id') id: string) {
+  const parsedId = Number(id);
+
+  if (!Number.isInteger(parsedId)) {
+    throw new BadRequestException('ID inválido');
   }
 
-  /**
-   *@returns avctualiza User y id
+  return this.userService.findById(parsedId);
+}
+
+
+/**
+ *@returns avctualiza User y id
    * @param id identificador principal
    * @param updateUserDto actualización de User
    */
@@ -59,4 +74,18 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
+
+
+ @UseGuards(JwtAuthGuard)
+@Post('avatar')
+@UseInterceptors(FileInterceptor('file', multerAvatarConfig))
+async uploadAvatar(
+  @UploadedFile() file: Express.Multer.File,
+  @Req() req
+) {
+  return this.userService.updateAvatar(req.user.id, file.filename);
+}
+
+
+
 }

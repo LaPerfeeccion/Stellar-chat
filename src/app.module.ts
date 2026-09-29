@@ -21,7 +21,6 @@ import { Rol } from './Modules/rol/entities/rol.entity';
 import { RolModule } from './Modules/rol/rol.module';
 import { RolLevelingSystem } from './Modules/rol_leveling_system/entities/rol_leveling_system.entity';
 import { RolLevelingSystemModule } from './Modules/rol_leveling_system/rol_leveling_system.module';
-import { RolLevelingSystemService } from './Modules/rol_leveling_system/rol_leveling_system.service';
 import { Server } from './Modules/server/entities/server.entity';
 import { ServerModule } from './Modules/server/server.module';
 import { UserType } from './Modules/user/entities/user-type.entity';
@@ -31,30 +30,52 @@ import { UserModule } from './Modules/user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true
-    }),
-    TypeOrmModule.forRootAsync({ 
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        // driver: require('mysql2'), // Remove this line
         host: configService.get<string>('DATABASE_HOST'),
         port: configService.get<number>('DATABASE_PORT'),
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        // autoLoadEntities: true, // Remove this line
-        entities: [Rol, RolLevelingSystem, User, Ban, ChatChannel, LevelingSystem, Message, Permission, Server, ChatChannelUser, UserType], // Add this line
+        entities: [
+          Rol,
+          RolLevelingSystem,
+          User,
+          Ban,
+          ChatChannel,
+          LevelingSystem,
+          Message,
+          Permission,
+          Server,
+          ChatChannelUser,
+          UserType,
+        ],
         synchronize: true,
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
+
     UserModule,
-    BanModule, ChatChannelModule, LevelingSystemModule, MessagesModule, ServerModule, RolModule, AuthModule, PermissionModule, RolLevelingSystemModule],
-    controllers: [AppController],
-    providers: [AppService,{ 
-    provide: APP_GUARD,
-    useClass: JwtAuthGuard,
-}, RolLevelingSystemService],
+    BanModule,
+    ChatChannelModule,
+    LevelingSystemModule,
+    MessagesModule,
+    ServerModule,
+    RolModule,
+    AuthModule,
+    PermissionModule,
+    RolLevelingSystemModule, // 👈 ESTE YA LO TRAE TODO
+  ],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

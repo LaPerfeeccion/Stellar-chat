@@ -9,5 +9,6 @@ import { ChatChannel } from './entities/chat_channel.entity';
   imports: [TypeOrmModule.forFeature([ChatChannel, ChatChannelUser])],
   controllers: [ChatChannelController],
   providers: [ChatChannelService],
+  exports: [ChatChannelService],
 })
 export class ChatChannelModule {}

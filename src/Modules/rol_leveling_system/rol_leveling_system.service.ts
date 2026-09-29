@@ -1,9 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateRolLevelingSystemDto } from './dto/create-rol_leveling_system.dto';
 import { UpdateRolLevelingSystemDto } from './dto/update-rol_leveling_system.dto';
+import { RolLevelingSystem } from './entities/rol_leveling_system.entity';
+
 
 @Injectable()
 export class RolLevelingSystemService {
+  constructor(
+    @InjectRepository(RolLevelingSystem)
+    private readonly repo: Repository<RolLevelingSystem>, // 👈 CLAVE
+  ) {}
+
   create(createRolLevelingSystemDto: CreateRolLevelingSystemDto) {
     return 'This action adds a new rolLevelingSystem';
   }
@@ -20,7 +29,12 @@ export class RolLevelingSystemService {
     return `This action updates a #${id} rolLevelingSystem`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} rolLevelingSystem`;
+  async remove(id: number) {
+    if (!id || isNaN(id)) {
+      console.error('❌ ID inválido en remove:', id);
+      return;
+    }
+
+    return this.repo.delete(id);
   }
 }

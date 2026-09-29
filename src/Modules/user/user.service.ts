@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import * as fs from 'fs';
+import { join } from 'path';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserType } from './entities/user-type.entity';
@@ -45,9 +47,6 @@ export class UserService {
    *@returns usando where
    * @param where para elegir ciertas propiedades
    */
-  findOne(where: FindOptionsWhere<User> | FindOptionsWhere<User>[]) {
-    return this.userRepository.findOne({ where });
-  }
 
   /**
    *@returns especificamen el email
@@ -84,4 +83,55 @@ export class UserService {
       relations: ['users']
     });
   }
+
+  async updateAvatar(userId: number, filename: string) {
+  const user = await this.userRepository.findOne({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new BadRequestException('Usuario no encontrado');
+  }
+
+  // 🔥 borrar avatar anterior si existe
+  if (user.avatar) {
+    const oldAvatarPath = join(
+      __dirname,
+      '..',
+      '..',
+      'uploads',
+      'avatars',
+      user.avatar,
+    );
+
+    if (fs.existsSync(oldAvatarPath)) {
+      fs.unlinkSync(oldAvatarPath);
+    }
+  }
+
+  user.avatar = filename;
+  user.hasAvatar = true;
+
+  await this.userRepository.save(user);
+
+  return {
+    avatarUrl: `http://localhost:3000/uploads/avatars/${filename}`,
+  };
 }
+
+findById(id: number) {
+  if (!Number.isInteger(id)) {
+    throw new BadRequestException('ID inválido');
+  }
+
+  return this.userRepository.findOne({ where: { id } });
+}
+
+findByEmail(email: string) {
+  return this.userRepository.findOne({ where: { email } });
+}
+
+
+}
+
+

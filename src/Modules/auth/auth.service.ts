@@ -39,10 +39,12 @@ export class AuthService {
    * @returns - Id del usuario
    */
   async register(createUser: CreateUserDto): Promise<number> {
-    const decryptPassword = createUser.password;
-    const hashPassword = await bcrypt.hash(decryptPassword, 10);
-    createUser = { ...createUser, password: hashPassword };
+    const hashPassword = await bcrypt.hash(createUser.password, 10);
+    createUser.password = hashPassword;
+    // createUser = { ...createUser, password: hashPassword };
+    
     return this.userService.create(createUser);
+
   }
 
   /**
@@ -52,7 +54,8 @@ export class AuthService {
    * @returns - Usuario
    */
   async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.userService.findOne({ email });
+    const user = await this.userService.findByEmail(email);
+
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
@@ -115,11 +118,12 @@ export class AuthService {
   ): Promise<Omit<LoginResponseDto, 'user'>> {
     const payload: AuthTokenPayload = { id: userInfo.id, email: userInfo.email };
     return {
-      token: this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_SECRET'), expiresIn: '1m' }),
+      token: this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_SECRET'), expiresIn: '1h' }),
       refresh: await this.generateRefreshToken(userInfo, currentRefreshToken, currentRefreshTokenExpiresAt)
     };
   }
 
+  
   /**
    *
    */

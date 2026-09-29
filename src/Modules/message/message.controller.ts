@@ -1,17 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessageService } from './message.service';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('messages')
 export class MessageController {
   constructor(private readonly messagesService: MessageService) {}
 
-  @Post('create')
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
-  }
-
+@UseGuards(JwtAuthGuard)
+@Post('create')
+create(@Body() dto, @Req() req) {
+  return this.messagesService.create(dto, req.user.id);
+}
   @Get('getAll')
   findAll() {
     return this.messagesService.findAll();
@@ -31,4 +33,10 @@ export class MessageController {
   remove(@Param('id') id: string) {
     return this.messagesService.remove(+id);
   }
+
+  @Get('channel/:id')
+  findByChannel(@Param('id') id: string) {
+    return this.messagesService.findByChannel(+id);
+  }
+
 }

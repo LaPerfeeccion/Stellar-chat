@@ -30,14 +30,15 @@ export class AuthController {
    * @param request recuesta
    * @param loginDto caracteres que se usan para que el servicio login se pueda ejecutar
    */
-  @Public()
-  @Post('login')
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(AuthInterceptor)
-  @UseGuards(LocalAuthGuard)
-  async login(@Req() request: Request): Promise<LoginResponseDto> {
-    return this.authService.login(request.user as User);
-  }
+@Public()
+@Post('login')
+@UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(LocalAuthGuard)
+async login(@Req() request: Request): Promise<LoginResponseDto> {
+  const user = request.user as User;
+  return this.authService.login(user); // ✅ esto devuelve user + token + refresh
+}
+
   /**
    *@returns creacion de un usuario nuevo en registrer
    * @param createUserDto

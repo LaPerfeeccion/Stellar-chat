@@ -1,6 +1,6 @@
 import { ChatChannelUser } from "src/Modules/chat_channel/entities/chat_channel-user.entity";
 import { CommonEntity } from "src/shared/entity/common.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity()
 export class Message extends CommonEntity {
@@ -11,6 +11,10 @@ export class Message extends CommonEntity {
     @Column({default: false})
     isEdited: boolean;
 
-    @ManyToOne(() => ChatChannelUser, (chatChannelUser) => chatChannelUser.messages)
-    chatChannelUser: ChatChannelUser;
+   @ManyToOne(() => ChatChannelUser, (ccu) => ccu.messages)
+@JoinColumn({ name: 'chatChannelUserId' })
+chatChannelUser: ChatChannelUser;
+
+
+    
 }

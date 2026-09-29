@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { RolLevelingSystemService } from './rol_leveling_system.service';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateRolLevelingSystemDto } from './dto/create-rol_leveling_system.dto';
 import { UpdateRolLevelingSystemDto } from './dto/update-rol_leveling_system.dto';
+import { RolLevelingSystemService } from './rol_leveling_system.service';
 
 @Controller('rol-leveling-system')
 export class RolLevelingSystemController {
@@ -28,7 +28,14 @@ export class RolLevelingSystemController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rolLevelingSystemService.remove(+id);
+remove(@Param('id') id: string) {
+  const parsedId = Number(id);
+
+  if (!parsedId || isNaN(parsedId)) {
+    throw new BadRequestException('ID inválido');
   }
+
+  return this.rolLevelingSystemService.remove(parsedId);
+}
+
 }
